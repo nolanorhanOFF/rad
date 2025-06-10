@@ -25,6 +25,22 @@ h1.animated {
   font-size: 1.4em;
   color: #00ffc8;
   margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#play-pause-btn {
+  font-size: 1.2em;
+  padding: 10px 30px;
+  background-color: #00ffc8;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+  color: #111;
+  transition: background-color 0.3s ease;
+}
+
+#play-pause-btn:hover {
+  background-color: #00d4a0;
 }
 
 @keyframes fadeIn {
