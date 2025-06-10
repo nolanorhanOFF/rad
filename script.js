@@ -13,13 +13,15 @@ const playlist = [
 ];
 
 let currentIndex = 0;
+let isPlaying = false;
 
-// Déterminer l'heure de démarrage pour synchroniser tout le monde
+// Synchronisation basée sur le temps
 const startTime = Math.floor(Date.now() / 1000);
 currentIndex = startTime % playlist.length;
 
 function onYouTubeIframeAPIReady() {
   loadVideo(currentIndex);
+  setupButton();
 }
 
 function loadVideo(index) {
@@ -37,7 +39,7 @@ function loadVideo(index) {
 }
 
 function onPlayerReady(event) {
-  event.target.playVideo();
+  if (isPlaying) event.target.playVideo();
 }
 
 function onPlayerStateChange(event) {
@@ -45,5 +47,23 @@ function onPlayerStateChange(event) {
     currentIndex = (currentIndex + 1) % playlist.length;
     player.destroy();
     loadVideo(currentIndex);
+    if (isPlaying) {
+      player.playVideo();
+    }
   }
+}
+
+function setupButton() {
+  const btn = document.getElementById("play-pause-btn");
+  btn.addEventListener("click", () => {
+    if (!player) return;
+    if (isPlaying) {
+      player.pauseVideo();
+      btn.textContent = "▶️ Lecture";
+    } else {
+      player.playVideo();
+      btn.textContent = "⏸ Pause";
+    }
+    isPlaying = !isPlaying;
+  });
 }
