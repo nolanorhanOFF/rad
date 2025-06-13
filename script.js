@@ -9,18 +9,13 @@ const playlist = [
   { id: "fL0zhg3nBus", title: "Musique 7" },
   { id: "RgKAFK5djSk", title: "Wiz Khalifa - See You Again" },
   { id: "2Vv-BfVoq4g", title: "Ed Sheeran - Perfect" },
-  { id: "09R8_2nJtjg", title: "Maroon 5 - Sugar" },
-  { id: "fHI8X4OXluQ", title: "The Weeknd - Blinding Lights" },
-  { id: "7wtfhZwyrcc", title: "Imagine Dragons - Believer" },
-  { id: "DyDfgMOUjCI", title: "Billie Eilish - bad guy" },
-  { id: "TUVcZfQe-Kw", title: "Dua Lipa - Levitating" },
-  { id: "IcrbM1l_BoI", title: "Avicii - Wake Me Up" }
+  { id: "09R8_2nJtjg", title: "Maroon 5 - Sugar" }
 ];
 
 let currentIndex = 0;
 let isPlaying = false;
 
-// Synchronisation universelle via l'heure Unix
+// Synchronisation basée sur le temps
 const startTime = Math.floor(Date.now() / 1000);
 currentIndex = startTime % playlist.length;
 
@@ -43,4 +38,32 @@ function loadVideo(index) {
   document.getElementById("now-playing").textContent = `🎶 En cours : ${playlist[index].title}`;
 }
 
-function
+function onPlayerReady(event) {
+  if (isPlaying) event.target.playVideo();
+}
+
+function onPlayerStateChange(event) {
+  if (event.data === YT.PlayerState.ENDED) {
+    currentIndex = (currentIndex + 1) % playlist.length;
+    player.destroy();
+    loadVideo(currentIndex);
+    if (isPlaying) {
+      player.playVideo();
+    }
+  }
+}
+
+function setupButton() {
+  const btn = document.getElementById("play-pause-btn");
+  btn.addEventListener("click", () => {
+    if (!player) return;
+    if (isPlaying) {
+      player.pauseVideo();
+      btn.textContent = "▶️ Lecture";
+    } else {
+      player.playVideo();
+      btn.textContent = "⏸ Pause";
+    }
+    isPlaying = !isPlaying;
+  });
+}
